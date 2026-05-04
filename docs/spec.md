@@ -214,19 +214,25 @@ By design, vcif-rdf never:
 If a graph violates any of these, it is not a valid vcif-rdf carrier;
 the SHACL validator rejects it (or the importer refuses to dispatch).
 
-## 10. Relationship to vcif
+## 10. Relationship to vcif and vcif-hlo
 
-vcif and vcif-rdf are **substrate-column siblings** in the
-(depth × substrate) carrier grid registered in v4cat's cotype:
+vcif, vcif-rdf, and [vcif-hlo][vcif-hlo] are **substrate-column
+siblings** in the (depth × substrate) carrier grid registered in
+v4cat's cotype:
 
-| | JSON | RDF |
-|---|---|---|
-| operation-log | `v4cat.patch` (vcif) | `v4cat.patch` (vcif-rdf) |
-| state-snapshot | `v4cat.snapshot` (vcif) | `v4cat.snapshot` (vcif-rdf) |
-| V₄-cover | `v4cat.closure-report` (vcif) | `v4cat.closure-report` (vcif-rdf) |
-| residue | `v4cat.residue-report` (vcif) | `v4cat.residue-report` (vcif-rdf) |
+[vcif-hlo]: https://github.com/v4cat-oss/vcif-hlo
 
-Neither column is canonical. The catalogue's identity is unchanged
-across substrates. A round-trip that reads from one column and writes
-to the other through v4cat's public API produces identical catalogue
-state — the **cross-substrate parity** invariant.
+| Depth | JSON (vcif) | RDF (vcif-rdf) | Tensor (vcif-hlo) |
+| --- | --- | --- | --- |
+| operation-log | `v4cat.patch` | `v4cat.patch` | `IdDictionary` + ordered ops |
+| state-snapshot | `v4cat.snapshot` | `v4cat.snapshot` | `ReferentUniverseTensor` |
+| V₄-cover | `v4cat.closure-report` | `v4cat.closure-report` | `CoverTensor` (cell ∈ {00,01,10,11}) |
+| residue | `v4cat.residue-report` | `v4cat.residue-report` | cell-mask projection |
+
+No column is canonical. The catalogue's identity is unchanged across
+substrates. A round-trip that reads from one column and writes to
+another through v4cat's public API produces identical catalogue
+state — the **cross-substrate parity** invariant. vcif-hlo
+operationalises kquery as `cell_code = 2·A_live + B_live` (per
+[v4cat `theory.md` § 15][theory15]), which makes the V₄-cover row
+particularly efficient in the tensor substrate.
