@@ -1,0 +1,33 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix vcp:  <https://v4cat-oss.github.io/vcif-rdf/profiles#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# v4cat.patch profile — operation-log carrier h ∈ H.
+#
+# Group-theoretically, this is the *fundamental* carrier: the
+# group-faithful element h ∈ H = ℤ^𝔄 itself. Snapshot, closure-report,
+# and residue-report are projections of patch.
+#
+# A patch graph carries an *ordered* sequence of NodeAssertion and
+# EdgeAssertion translations. Order is encoded via the vcp:operationIndex
+# integer slot per assertion.
+#
+
+vcp:Patch
+  a vc:NodeAssertion ;
+  vc:identifier "profile:v4cat.patch" ;
+  vc:label "v4cat.patch" ;
+  rdfs:comment "Operation-log carrier — group-faithful element h ∈ H. Ordered sequence of translation operations. The patch profile is the fundamental carrier from which other profiles project." .
+
+vcp:operationIndex
+  a vc:NodeAssertion ;
+  vc:identifier "carrier-slot:operationIndex" ;
+  vc:label "operation-index slot" ;
+  rdfs:comment "Integer-valued ordering on assertions within a patch. Required for group-faithful round-trip; cf. v4cat's missing event-log API per shadow_event_log_gap.md." .
+
+vcp:inputStateHash
+  a vc:NodeAssertion ;
+  vc:identifier "carrier-slot:inputStateHash" ;
+  vc:label "input-state-hash slot" ;
+  rdfs:comment "Optional content hash of the catalogue state the patch was generated against. Required for materialized-kquery payloads (theory.md § 15.6)." .

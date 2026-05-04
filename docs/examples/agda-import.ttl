@@ -1,0 +1,79 @@
+@prefix vc: <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix ex: <https://example.org/agda#> .
+
+#
+# vcif-rdf v4cat.snapshot — Agda Data.List raw incidence import.
+#
+# Parallel to vcif's docs/examples/agda-import.json. Same nodes,
+# same edges; different substrate. Demonstrates the carrier-vs-object
+# discipline: ex:hasKind / ex:containsDef / ex:definesName are NOT
+# RDF predicates — they are NodeAssertions referenced through
+# vc:edgeKind in EdgeAssertions.
+#
+
+# ---- Object-language node-kinds (each is a NodeAssertion) -----------------
+
+ex:agdaModule     a vc:NodeAssertion ;
+  vc:identifier "agda-module" ;
+  vc:label "Agda module" .
+
+ex:agdaDefinition a vc:NodeAssertion ;
+  vc:identifier "agda-definition" ;
+  vc:label "Agda definition" .
+
+ex:agdaName       a vc:NodeAssertion ;
+  vc:identifier "agda-name" ;
+  vc:label "Agda name anchor" .
+
+ex:agdaKind       a vc:NodeAssertion ;
+  vc:identifier "agda-kind" ;
+  vc:label "Agda kind anchor" .
+
+# ---- Object-language edge-kinds (also NodeAssertions, NOT RDF predicates) -
+
+ex:hasKind        a vc:NodeAssertion ;
+  vc:identifier "has-kind" ;
+  vc:label "has-kind" .
+
+ex:containsDef    a vc:NodeAssertion ;
+  vc:identifier "contains-def" ;
+  vc:label "contains-def" .
+
+ex:definesName    a vc:NodeAssertion ;
+  vc:identifier "defines-name" ;
+  vc:label "defines-name" .
+
+# ---- Domain nodes ---------------------------------------------------------
+
+ex:modDataList a vc:NodeAssertion ;
+  vc:identifier "mod:Data.List" ;
+  vc:label "Data.List" .
+
+ex:defMap a vc:NodeAssertion ;
+  vc:identifier "def:Data.List.map" ;
+  vc:label "map" .
+
+ex:nameMap a vc:NodeAssertion ;
+  vc:identifier "name:map" ;
+  vc:label "map" .
+
+ex:kindAgdaDefinition a vc:NodeAssertion ;
+  vc:identifier "kind:AgdaDefinition" ;
+  vc:label "AgdaDefinition" .
+
+# ---- Edge assertions ------------------------------------------------------
+
+ex:e1 a vc:EdgeAssertion ;
+  vc:source ex:modDataList ;
+  vc:edgeKind ex:containsDef ;
+  vc:target ex:defMap .
+
+ex:e2 a vc:EdgeAssertion ;
+  vc:source ex:defMap ;
+  vc:edgeKind ex:definesName ;
+  vc:target ex:nameMap .
+
+ex:e3 a vc:EdgeAssertion ;
+  vc:source ex:defMap ;
+  vc:edgeKind ex:hasKind ;
+  vc:target ex:kindAgdaDefinition .

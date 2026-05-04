@@ -1,0 +1,114 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# Layer 1 — SHACL Core shapes for vcif-rdf carrier well-formedness.
+#
+# Validates that every carrier-class instance has the required
+# carrier slots filled with the right types. Does NOT say anything
+# about object-language semantics; this is purely structural.
+#
+
+vc:NodeAssertionShape
+  a sh:NodeShape ;
+  sh:targetClass vc:NodeAssertion ;
+
+  sh:property [
+    sh:path vc:identifier ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype <http://www.w3.org/2001/XMLSchema#string> ;
+    sh:message "NodeAssertion must have exactly one vc:identifier (string)." ;
+  ] ;
+
+  sh:property [
+    sh:path vc:label ;
+    sh:maxCount 1 ;
+    sh:datatype <http://www.w3.org/2001/XMLSchema#string> ;
+    sh:message "NodeAssertion may have at most one vc:label (string)." ;
+  ] .
+
+vc:EdgeAssertionShape
+  a sh:NodeShape ;
+  sh:targetClass vc:EdgeAssertion ;
+
+  sh:property [
+    sh:path vc:source ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class vc:NodeAssertion ;
+    sh:message "EdgeAssertion must have exactly one vc:source pointing at a NodeAssertion." ;
+  ] ;
+
+  sh:property [
+    sh:path vc:edgeKind ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class vc:NodeAssertion ;
+    sh:message "EdgeAssertion must have exactly one vc:edgeKind pointing at a NodeAssertion (NOT an RDF predicate; the kind is itself a node)." ;
+  ] ;
+
+  sh:property [
+    sh:path vc:target ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class vc:NodeAssertion ;
+    sh:message "EdgeAssertion must have exactly one vc:target pointing at a NodeAssertion." ;
+  ] .
+
+vc:CoverAssertionShape
+  a sh:NodeShape ;
+  sh:targetClass vc:CoverAssertion ;
+
+  sh:property [
+    sh:path vc:identifier ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype <http://www.w3.org/2001/XMLSchema#string> ;
+  ] ;
+
+  sh:property [
+    sh:path vc:universe ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class vc:NodeAssertion ;
+  ] ;
+
+  sh:property [
+    sh:path vc:leftObserver ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+  ] ;
+
+  sh:property [
+    sh:path vc:rightObserver ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+  ] .
+
+vc:CellAssertionShape
+  a sh:NodeShape ;
+  sh:targetClass vc:CellAssertion ;
+
+  sh:property [
+    sh:path vc:cover ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class vc:CoverAssertion ;
+  ] ;
+
+  sh:property [
+    sh:path vc:cell ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( vc:cell00 vc:cell01 vc:cell10 vc:cell11 ) ;
+    sh:message "CellAssertion vc:cell must be one of the four V₄ coordinate values." ;
+  ] ;
+
+  sh:property [
+    sh:path vc:member ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class vc:NodeAssertion ;
+  ] .

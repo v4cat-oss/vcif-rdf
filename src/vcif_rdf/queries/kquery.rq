@@ -1,0 +1,52 @@
+PREFIX vc: <https://v4cat-oss.github.io/vcif-rdf/carrier#>
+
+#
+# vcif-rdf parametric kquery.
+#
+# Given a CoverAssertion with vc:universe ?U, vc:leftObserver ?A,
+# vc:rightObserver ?B (each pointing at a NodeAssertion that itself
+# is the head of vc:edgeKind ex:inSet edges), classifies every member
+# of U into one of the four V₄ cells:
+#
+#   χ_{A,B}(u) = ( χ_A(u), χ_B(u) ) ∈ V₄
+#
+# Per theory.md § 15.5: this is the V₄-equivariant coordinate chart
+# of the observer-pair group action. The four cells are *fibers*,
+# not arbitrary buckets.
+#
+# Bind ?cover and (in the harness) ?inSetEdgeKind before executing.
+# Returns one row per (?u, ?cell) pair.
+#
+
+SELECT ?u ?cell
+WHERE {
+  $cover vc:universe ?universe ;
+         vc:leftObserver ?left ;
+         vc:rightObserver ?right .
+
+  ?uMembership a vc:EdgeAssertion ;
+               vc:source ?u ;
+               vc:edgeKind $inSetKind ;
+               vc:target ?universe .
+
+  BIND(EXISTS {
+    ?aMem a vc:EdgeAssertion ;
+          vc:source ?u ;
+          vc:edgeKind $inSetKind ;
+          vc:target ?left .
+  } AS ?inA)
+
+  BIND(EXISTS {
+    ?bMem a vc:EdgeAssertion ;
+          vc:source ?u ;
+          vc:edgeKind $inSetKind ;
+          vc:target ?right .
+  } AS ?inB)
+
+  BIND(
+    IF(?inA && ?inB, vc:cell11,
+    IF(?inA && !?inB, vc:cell10,
+    IF(!?inA && ?inB, vc:cell01, vc:cell00)))
+    AS ?cell
+  )
+}

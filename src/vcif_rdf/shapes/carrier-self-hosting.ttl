@@ -1,0 +1,60 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+
+#
+# Layer 2 — SHACL-SPARQL constraints for carrier-slot self-hosting.
+#
+# The carrier slots (vc:source, vc:edgeKind, vc:target, ...) must
+# themselves appear as vc:NodeAssertions with stable identifiers.
+# This closes the loophole that would let the carrier hide its own
+# representational machinery from v4cat.
+#
+# Per theory.md § 15.10 + carrier writeup § 6.
+#
+
+vc:CarrierSlotHostedShape
+  a sh:NodeShape ;
+  sh:targetNode
+    vc:source, vc:edgeKind, vc:target,
+    vc:cover, vc:cell, vc:member,
+    vc:universe, vc:leftObserver, vc:rightObserver,
+    vc:identifier, vc:label ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Carrier slot must be hosted as a vc:NodeAssertion with a stable identifier." ;
+    sh:prefixes vc: ;
+    sh:select """
+      PREFIX vc:  <https://v4cat-oss.github.io/vcif-rdf/carrier#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      SELECT $this
+      WHERE {
+        FILTER NOT EXISTS {
+          $this rdf:type vc:NodeAssertion ;
+                vc:identifier ?id .
+        }
+      }
+    """ ;
+  ] .
+
+vc:CarrierClassHostedShape
+  a sh:NodeShape ;
+  sh:targetNode
+    vc:NodeAssertion, vc:EdgeAssertion, vc:CoverAssertion,
+    vc:CellAssertion, vc:ProjectionAssertion, vc:TensionAssertion,
+    vc:DerivationAssertion, vc:ResidueAssertion, vc:ExpectationAssertion ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Carrier class must be hosted as a vc:NodeAssertion with a stable identifier (so the catalogue can reason about the carrier itself)." ;
+    sh:prefixes vc: ;
+    sh:select """
+      PREFIX vc:  <https://v4cat-oss.github.io/vcif-rdf/carrier#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      SELECT $this
+      WHERE {
+        FILTER NOT EXISTS {
+          $this rdf:type vc:NodeAssertion ;
+                vc:identifier ?id .
+        }
+      }
+    """ ;
+  ] .

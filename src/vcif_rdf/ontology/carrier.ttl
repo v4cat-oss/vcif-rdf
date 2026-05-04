@@ -1,0 +1,206 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# vcif-rdf carrier ontology, v0.1
+#
+# A *carrier* in v4cat sense: a substrate that transports v4cat-native
+# assertions without smuggling object-language meaning into the substrate.
+# Every v4cat object-language item (kinds, edge kinds, properties,
+# framework claims) is a vc:NodeAssertion. The only RDF predicates used
+# are the fixed *carrier slots* declared below.
+#
+# Algebraic basis: v4cat theory.md § 15. RISC writes are translations;
+# kquery is the V₄ coordinate chart.
+#
+# License: Apache-2.0 (see ./LICENSE).
+#
+
+# -----------------------------------------------------------------------------
+# Carrier classes — each represents one shape of v4cat assertion record.
+# -----------------------------------------------------------------------------
+
+vc:CarrierClass
+  a rdfs:Class ;
+  rdfs:label "CarrierClass" ;
+  rdfs:comment "Marker class for vcif-rdf carrier classes. Every carrier class is also mirrored as a vc:NodeAssertion to satisfy the self-hosting closure check." .
+
+vc:NodeAssertion
+  a vc:CarrierClass ;
+  rdfs:label "NodeAssertion" ;
+  rdfs:comment "A v4cat node assertion — `Nₓ ∈ 𝔄_node`. Carries identifier and label; references the kind via a separate vc:EdgeAssertion with vc:edgeKind = has-kind." .
+
+vc:EdgeAssertion
+  a vc:CarrierClass ;
+  rdfs:label "EdgeAssertion" ;
+  rdfs:comment "A v4cat edge assertion — `Eₛ,ₖ,ₜ ∈ 𝔄_edge`. The edge-kind k is itself a vc:NodeAssertion referenced via vc:edgeKind, never an RDF predicate." .
+
+vc:CoverAssertion
+  a vc:CarrierClass ;
+  rdfs:label "CoverAssertion" ;
+  rdfs:comment "A v4cat cover (kquery frame) — declares (U, A, B) and the V₄ coordinate chart χ_{A,B} : U → V₄ that classifies each member of U into one of four cells." .
+
+vc:CellAssertion
+  a vc:CarrierClass ;
+  rdfs:label "CellAssertion" ;
+  rdfs:comment "Witnesses one member of one cell of one cover. Materializes χ_{A,B}(u) = cell for a specific u." .
+
+vc:ProjectionAssertion
+  a vc:CarrierClass ;
+  rdfs:label "ProjectionAssertion" ;
+  rdfs:comment "A named quotient over a cover: a projection of the V₄ fiber cover into a coarser partition." .
+
+vc:TensionAssertion
+  a vc:CarrierClass ;
+  rdfs:label "TensionAssertion" ;
+  rdfs:comment "A declarative recognizer specification — parameters, let-bindings, cover, cell actions." .
+
+vc:DerivationAssertion
+  a vc:CarrierClass ;
+  rdfs:label "DerivationAssertion" ;
+  rdfs:comment "An audit record for one application of a tension's cell action; carries the (cover, cell, parameters) frame and the produced edges/nodes/residues." .
+
+vc:ResidueAssertion
+  a vc:CarrierClass ;
+  rdfs:label "ResidueAssertion" ;
+  rdfs:comment "A non-empty cell that the recognizer chose not to derive into; carries (cover, cell, subject, action, justification)." .
+
+vc:ExpectationAssertion
+  a vc:CarrierClass ;
+  rdfs:label "ExpectationAssertion" ;
+  rdfs:comment "A closure check on a cover; expects per-cell {empty, nonempty, min/max-items}." .
+
+# -----------------------------------------------------------------------------
+# Carrier slots — fixed RDF predicates used to encode v4cat assertions.
+# These are the *only* RDF predicates the carrier introduces.
+# -----------------------------------------------------------------------------
+
+vc:identifier
+  a rdf:Property ;
+  rdfs:label "identifier" ;
+  rdfs:comment "Stable string identifier for a NodeAssertion. Matches v4cat's id pattern ^[A-Za-z][A-Za-z0-9_.:/#@+-]*$." ;
+  rdfs:domain vc:NodeAssertion ;
+  rdfs:range xsd:string .
+
+vc:label
+  a rdf:Property ;
+  rdfs:label "label" ;
+  rdfs:comment "Human-readable label for a NodeAssertion." ;
+  rdfs:range xsd:string .
+
+vc:source
+  a rdf:Property ;
+  rdfs:label "source slot" ;
+  rdfs:comment "EdgeAssertion's source — the head node of an edge assertion. Points at a vc:NodeAssertion." ;
+  rdfs:domain vc:EdgeAssertion ;
+  rdfs:range vc:NodeAssertion .
+
+vc:edgeKind
+  a rdf:Property ;
+  rdfs:label "edgeKind slot" ;
+  rdfs:comment "EdgeAssertion's middle node (the kind k in Eₛ,ₖ,ₜ). Points at a vc:NodeAssertion. Note: this is NOT an RDF property layer; the kind itself is just a node." ;
+  rdfs:domain vc:EdgeAssertion ;
+  rdfs:range vc:NodeAssertion .
+
+vc:target
+  a rdf:Property ;
+  rdfs:label "target slot" ;
+  rdfs:comment "EdgeAssertion's target — the tail node. Points at a vc:NodeAssertion." ;
+  rdfs:domain vc:EdgeAssertion ;
+  rdfs:range vc:NodeAssertion .
+
+vc:cover
+  a rdf:Property ;
+  rdfs:label "cover slot" ;
+  rdfs:comment "CellAssertion / DerivationAssertion / ResidueAssertion / ExpectationAssertion's cover reference." ;
+  rdfs:range vc:CoverAssertion .
+
+vc:cell
+  a rdf:Property ;
+  rdfs:label "cell slot" ;
+  rdfs:comment "CellAssertion's V₄ cell label — one of vc:cell00, vc:cell01, vc:cell10, vc:cell11." .
+
+vc:member
+  a rdf:Property ;
+  rdfs:label "member slot" ;
+  rdfs:comment "CellAssertion's member of the cell — the u for which χ_{A,B}(u) = cell." ;
+  rdfs:range vc:NodeAssertion .
+
+vc:universe
+  a rdf:Property ;
+  rdfs:label "universe slot" ;
+  rdfs:comment "CoverAssertion's declared universe U. Per scope.policy, U may be open / closed / bounded-by-document / external." ;
+  rdfs:range vc:NodeAssertion .
+
+vc:leftObserver
+  a rdf:Property ;
+  rdfs:label "left-observer slot" ;
+  rdfs:comment "CoverAssertion's left observer set A. Members are NodeAssertions whose vc:edgeKind ex:inSet edges target this set." .
+
+vc:rightObserver
+  a rdf:Property ;
+  rdfs:label "right-observer slot" ;
+  rdfs:comment "CoverAssertion's right observer set B." .
+
+vc:closurePolicy
+  a rdf:Property ;
+  rdfs:label "closure-policy slot" ;
+  rdfs:comment "CoverAssertion's closure policy — vc:mustClose, vc:mayHaveResidue, vc:reportOnly." .
+
+# -----------------------------------------------------------------------------
+# Cell labels — V₄ coordinate values.
+# Modelled as named NodeAssertions so they can be referenced uniformly.
+# -----------------------------------------------------------------------------
+
+vc:cell00 a vc:NodeAssertion ;
+  vc:identifier "cell:00" ; vc:label "00" .
+
+vc:cell01 a vc:NodeAssertion ;
+  vc:identifier "cell:01" ; vc:label "01" .
+
+vc:cell10 a vc:NodeAssertion ;
+  vc:identifier "cell:10" ; vc:label "10" .
+
+vc:cell11 a vc:NodeAssertion ;
+  vc:identifier "cell:11" ; vc:label "11" .
+
+# -----------------------------------------------------------------------------
+# Closure policies.
+# -----------------------------------------------------------------------------
+
+vc:mustClose      a vc:NodeAssertion ; vc:identifier "policy:must-close" .
+vc:mayHaveResidue a vc:NodeAssertion ; vc:identifier "policy:may-have-residue" .
+vc:reportOnly     a vc:NodeAssertion ; vc:identifier "policy:report-only" .
+
+# -----------------------------------------------------------------------------
+# Self-hosting: the carrier classes and slots are themselves NodeAssertions
+# of carrier-defined kinds. These declarations satisfy the SHACL-SPARQL
+# carrier-self-hosting closure check (see shapes/carrier-self-hosting.ttl).
+# -----------------------------------------------------------------------------
+
+# Carrier classes are mirrored as NodeAssertions of kind:CarrierClass.
+vc:NodeAssertion        a vc:NodeAssertion ; vc:identifier "carrier-class:NodeAssertion" .
+vc:EdgeAssertion        a vc:NodeAssertion ; vc:identifier "carrier-class:EdgeAssertion" .
+vc:CoverAssertion       a vc:NodeAssertion ; vc:identifier "carrier-class:CoverAssertion" .
+vc:CellAssertion        a vc:NodeAssertion ; vc:identifier "carrier-class:CellAssertion" .
+vc:ProjectionAssertion  a vc:NodeAssertion ; vc:identifier "carrier-class:ProjectionAssertion" .
+vc:TensionAssertion     a vc:NodeAssertion ; vc:identifier "carrier-class:TensionAssertion" .
+vc:DerivationAssertion  a vc:NodeAssertion ; vc:identifier "carrier-class:DerivationAssertion" .
+vc:ResidueAssertion     a vc:NodeAssertion ; vc:identifier "carrier-class:ResidueAssertion" .
+vc:ExpectationAssertion a vc:NodeAssertion ; vc:identifier "carrier-class:ExpectationAssertion" .
+
+# Carrier slots are mirrored as NodeAssertions of kind:CarrierSlot.
+vc:identifier   a vc:NodeAssertion ; vc:identifier "carrier-slot:identifier" .
+vc:label        a vc:NodeAssertion ; vc:identifier "carrier-slot:label" .
+vc:source       a vc:NodeAssertion ; vc:identifier "carrier-slot:source" .
+vc:edgeKind     a vc:NodeAssertion ; vc:identifier "carrier-slot:edgeKind" .
+vc:target       a vc:NodeAssertion ; vc:identifier "carrier-slot:target" .
+vc:cover        a vc:NodeAssertion ; vc:identifier "carrier-slot:cover" .
+vc:cell         a vc:NodeAssertion ; vc:identifier "carrier-slot:cell" .
+vc:member       a vc:NodeAssertion ; vc:identifier "carrier-slot:member" .
+vc:universe     a vc:NodeAssertion ; vc:identifier "carrier-slot:universe" .
+vc:leftObserver a vc:NodeAssertion ; vc:identifier "carrier-slot:leftObserver" .
+vc:rightObserver a vc:NodeAssertion ; vc:identifier "carrier-slot:rightObserver" .
+vc:closurePolicy a vc:NodeAssertion ; vc:identifier "carrier-slot:closurePolicy" .

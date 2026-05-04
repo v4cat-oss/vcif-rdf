@@ -1,0 +1,17 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix vcp:  <https://v4cat-oss.github.io/vcif-rdf/profiles#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# v4cat.snapshot profile — full visible-state π(h).
+#
+# A snapshot graph is RDF carrying NodeAssertions and EdgeAssertions
+# whose union represents π(h) for some h ∈ H = ℤ^𝔄. No history; no
+# operation order; idempotent under re-import.
+#
+
+vcp:Snapshot
+  a vc:NodeAssertion ;
+  vc:identifier "profile:v4cat.snapshot" ;
+  vc:label "v4cat.snapshot" ;
+  rdfs:comment "Visible-state quotient π(h) — set of nodes plus set of edges, no order, no inverses. Group-theoretically: the support map applied to a history element." .

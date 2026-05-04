@@ -1,0 +1,22 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix vcp:  <https://v4cat-oss.github.io/vcif-rdf/profiles#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# v4cat.vocabulary profile — basis declarations only.
+#
+# Declares the basis 𝔄 of allowed assertion atoms: which node-kinds
+# and which edge-kinds the document expects. Not on the projection-
+# depth axis (operation-log < snapshot < V₄-cover < residue) — this
+# profile carries the *signature*, not state.
+#
+# A vocabulary graph contains NodeAssertions for each declared kind,
+# plus EdgeAssertions linking edge-kinds to their source-kind /
+# target-kind constraints (where applicable).
+#
+
+vcp:Vocabulary
+  a vc:NodeAssertion ;
+  vc:identifier "profile:v4cat.vocabulary" ;
+  vc:label "v4cat.vocabulary" ;
+  rdfs:comment "Basis declarations — which node-kinds and edge-kinds the document admits. Signature, not state." .

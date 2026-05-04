@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools >= 61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vcif-rdf"
+version = "0.1.0"
+description = "RDF/SHACL/SPARQL carrier for v4cat catalogues — substrate-column counterpart to vcif"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Mike Mol", email = "mikemol@gmail.com" },
+]
+keywords = [
+    "v4cat",
+    "interchange",
+    "rdf",
+    "shacl",
+    "sparql",
+    "knowledge-graph",
+    "structural-cataloguing",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "v4cat>=0.5",
+    "rdflib>=7",
+    "pyshacl>=0.25",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.urls]
+Homepage   = "https://github.com/v4cat-oss/vcif-rdf"
+Spec       = "https://github.com/v4cat-oss/vcif-rdf/blob/main/docs/spec.md"
+Source     = "https://github.com/v4cat-oss/vcif-rdf"
+Issues     = "https://github.com/v4cat-oss/vcif-rdf/issues"
+Core       = "https://github.com/v4cat-oss/v4cat"
+Sibling    = "https://github.com/v4cat-oss/vcif"
+
+[project.scripts]
+vcif-rdf = "vcif_rdf.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.pytest.ini_options]
+testpaths = ["src/vcif_rdf/tests"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+vcif_rdf = [
+    "ontology/*.ttl",
+    "ontology/profiles/*.ttl",
+    "shapes/*.ttl",
+    "shapes/per-profile/*.ttl",
+    "queries/*.rq",
+    "queries/projections/*.rq",
+    "queries/recognizers/*.rq",
+]

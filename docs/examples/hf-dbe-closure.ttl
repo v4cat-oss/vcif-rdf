@@ -1,0 +1,98 @@
+@prefix vc: <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix ex: <https://example.org/hf-dbe#> .
+
+#
+# vcif-rdf v4cat.closure-report — hosted DBE framework closure.
+#
+# Parallel to vcif's docs/examples/hf-dbe-closure.json. The cover
+# `cover:HF-DBE-closure` declares an observer-pair (left = source-
+# declares; right = catalogue-represents) over the universe of HF-DBE
+# claims. The expected closure: 00, 01, 10 all empty; 11 contains
+# the one canonical DBE claim.
+#
+
+# ---- Kinds (NodeAssertions) ----------------------------------------------
+
+ex:hostedFramework  a vc:NodeAssertion ;
+  vc:identifier "hosted-framework" ;
+  vc:label "Hosted framework" .
+
+ex:frameworkClaim   a vc:NodeAssertion ;
+  vc:identifier "framework-claim" ;
+  vc:label "Framework claim" .
+
+# ---- Edge-kinds (NodeAssertions, NOT predicates) -------------------------
+
+ex:hasKind             a vc:NodeAssertion ;
+  vc:identifier "has-kind" .
+
+ex:sourceDeclares      a vc:NodeAssertion ;
+  vc:identifier "source-declares" .
+
+ex:catalogueRepresents a vc:NodeAssertion ;
+  vc:identifier "catalogue-represents" .
+
+ex:accountableFor      a vc:NodeAssertion ;
+  vc:identifier "accountable-for" .
+
+ex:inSet               a vc:NodeAssertion ;
+  vc:identifier "in-set" ;
+  vc:label "in-set" .
+
+# ---- Domain nodes --------------------------------------------------------
+
+ex:hfDbe a vc:NodeAssertion ;
+  vc:identifier "HF-DBE" ;
+  vc:label "decomposable-by-entailment" .
+
+ex:claimDbeShadows a vc:NodeAssertion ;
+  vc:identifier "CLAIM-DBE-produces-shadows" ;
+  vc:label "DBE produces externalized shadows" .
+
+# ---- Domain edges --------------------------------------------------------
+
+ex:e1 a vc:EdgeAssertion ;
+  vc:source ex:hfDbe ; vc:edgeKind ex:sourceDeclares ; vc:target ex:claimDbeShadows .
+
+ex:e2 a vc:EdgeAssertion ;
+  vc:source ex:hfDbe ; vc:edgeKind ex:catalogueRepresents ; vc:target ex:claimDbeShadows .
+
+ex:e3 a vc:EdgeAssertion ;
+  vc:source ex:hfDbe ; vc:edgeKind ex:accountableFor ; vc:target ex:claimDbeShadows .
+
+# ---- The cover (observer-pair frame) -------------------------------------
+# Universe = "claims accountable to HF-DBE" — for this minimal fixture,
+# concretely the singleton {CLAIM-DBE-produces-shadows}.
+# Left observer = "claims HF-DBE source-declares".
+# Right observer = "claims HF-DBE catalogue-represents".
+# Both observers contain CLAIM-DBE-produces-shadows; cell 11 is non-empty;
+# 00, 01, 10 are empty. Closure invariant satisfied.
+
+ex:universeHfDbe a vc:NodeAssertion ;
+  vc:identifier "U-HF-DBE-claims" ;
+  vc:label "U-HF-DBE-claims" .
+
+ex:setLeftDeclares a vc:NodeAssertion ;
+  vc:identifier "set:HF-DBE-source-declares" .
+
+ex:setRightRepresents a vc:NodeAssertion ;
+  vc:identifier "set:HF-DBE-catalogue-represents" .
+
+# Membership edges (using ex:inSet as the membership edge-kind):
+
+ex:m1 a vc:EdgeAssertion ;
+  vc:source ex:claimDbeShadows ; vc:edgeKind ex:inSet ; vc:target ex:universeHfDbe .
+
+ex:m2 a vc:EdgeAssertion ;
+  vc:source ex:claimDbeShadows ; vc:edgeKind ex:inSet ; vc:target ex:setLeftDeclares .
+
+ex:m3 a vc:EdgeAssertion ;
+  vc:source ex:claimDbeShadows ; vc:edgeKind ex:inSet ; vc:target ex:setRightRepresents .
+
+ex:cover a vc:CoverAssertion ;
+  vc:identifier "cover:HF-DBE-closure" ;
+  vc:label "DBE source-vs-catalogue closure" ;
+  vc:universe ex:universeHfDbe ;
+  vc:leftObserver ex:setLeftDeclares ;
+  vc:rightObserver ex:setRightRepresents ;
+  vc:closurePolicy vc:mustClose .

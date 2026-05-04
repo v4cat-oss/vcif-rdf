@@ -1,0 +1,24 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix vcp:  <https://v4cat-oss.github.io/vcif-rdf/profiles#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# v4cat.recognizer-package profile — tensions + cell actions.
+#
+# Recognizers are TensionAssertions: declarative specifications of
+# (parameters, body cover, cell actions). Their evaluation is
+# group-theoretic per theory.md § 15.6, § 15.15.E: the recognizer
+# materializes the cover's V₄ cells and dispatches a cell action
+# per non-empty cell. Recognizers must be equivariant under
+# identifier-renaming (§ 15.15.E).
+#
+# Cell actions: derive-edge, record-residue, report, stable, defer,
+# promote, boundary. Each is an ordinary v4cat ISA verb invocation
+# parameterised by the cell members.
+#
+
+vcp:RecognizerPackage
+  a vc:NodeAssertion ;
+  vc:identifier "profile:v4cat.recognizer-package" ;
+  vc:label "v4cat.recognizer-package" ;
+  rdfs:comment "Bundle of declarative recognizers — TensionAssertions plus the vocabulary they presuppose. Operator-layer profile (not on the projection-depth axis)." .

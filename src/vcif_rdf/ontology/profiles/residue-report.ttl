@@ -1,0 +1,34 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix vcp:  <https://v4cat-oss.github.io/vcif-rdf/profiles#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# v4cat.residue-report profile — further-quotient of cell members.
+#
+# A residue is a non-empty cell that the recognizer chose not to
+# derive into; the residue-report carries (cover, cell, subject,
+# action, justification) per residue. Projection-depth deepest:
+# named projection over the V₄-cover.
+#
+
+vcp:ResidueReport
+  a vc:NodeAssertion ;
+  vc:identifier "profile:v4cat.residue-report" ;
+  vc:label "v4cat.residue-report" ;
+  rdfs:comment "Residues from a prior closure run — per-residue (cover, cell, subject, action, justification). Projection-depth: further-quotient of cells." .
+
+vcp:residueAction
+  a vc:NodeAssertion ;
+  vc:identifier "carrier-slot:residueAction" ;
+  vc:label "residue-action slot" ;
+  rdfs:comment "One of: promote, defer, boundary, exclude, extend-scope, project, repair, ignore-with-justification." .
+
+vcp:residueJustification
+  a vc:NodeAssertion ;
+  vc:identifier "carrier-slot:residueJustification" ;
+  vc:label "residue-justification slot" .
+
+vcp:residueSubject
+  a vc:NodeAssertion ;
+  vc:identifier "carrier-slot:residueSubject" ;
+  vc:label "residue-subject slot" .

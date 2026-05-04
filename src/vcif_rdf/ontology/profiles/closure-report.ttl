@@ -1,0 +1,18 @@
+@prefix vc:   <https://v4cat-oss.github.io/vcif-rdf/carrier#> .
+@prefix vcp:  <https://v4cat-oss.github.io/vcif-rdf/profiles#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# v4cat.closure-report profile — V₄-cover χ_{A,B}(π(h)).
+#
+# Reports the four V₄ cells of one or more covers, plus expectations
+# for the cells (empty / nonempty / min-max). Group-theoretically:
+# the V₄ coordinate decomposition of the observer-pair group action
+# at a given visible state.
+#
+
+vcp:ClosureReport
+  a vc:NodeAssertion ;
+  vc:identifier "profile:v4cat.closure-report" ;
+  vc:label "v4cat.closure-report" ;
+  rdfs:comment "V₄-cover materialization — χ_{A,B}(π(h)) decomposed into 11/10/01/00 fibers, with per-cell expectations. Projection-depth: V₄-cover." .
