@@ -73,6 +73,31 @@ vc:ExpectationAssertion
   rdfs:comment "A closure check on a cover; expects per-cell {empty, nonempty, min/max-items}." .
 
 # -----------------------------------------------------------------------------
+# HF-GeometricCurrying carrier classes (added at fire #15)
+#
+# The geometric-currying substrate (cotype/shadow_geometric_currying.md)
+# treats edges as projections of closed event-cells. Two new carrier
+# classes carry the geometric form alongside the existing
+# vc:EdgeAssertion (which now serves as the saturated-projection form).
+#
+# Naming caveat: vc:CellAssertion above means "one cell of one kquery
+# cover". vc:EventCellAssertion below means "one event-cell with three
+# role-boundaries". The two are different concepts; the migration shadow
+# (shadow_geometric_currying_vcif_rdf_carrier.md) defers the
+# vc:CellAssertion -> vc:KqueryCellAssertion rename to a future fire.
+# -----------------------------------------------------------------------------
+
+vc:EventCellAssertion
+  a vc:CarrierClass ;
+  rdfs:label "EventCellAssertion" ;
+  rdfs:comment "A geometric-currying event-cell. EdgeCells carry three role-bindings (source, kind, target); NodeCells carry a single 'self' role-binding. Closure-state is open / boundary-closed / closed." .
+
+vc:RoleBinding
+  a vc:CarrierClass ;
+  rdfs:label "RoleBinding" ;
+  rdfs:comment "A grade-1 role-binding event ρ_r(e, x) on an EventCellAssertion. Three per EdgeCell; one per NodeCell." .
+
+# -----------------------------------------------------------------------------
 # Carrier slots — fixed RDF predicates used to encode v4cat assertions.
 # These are the *only* RDF predicates the carrier introduces.
 # -----------------------------------------------------------------------------
@@ -204,3 +229,50 @@ vc:universe     a vc:NodeAssertion ; vc:identifier "carrier-slot:universe" .
 vc:leftObserver a vc:NodeAssertion ; vc:identifier "carrier-slot:leftObserver" .
 vc:rightObserver a vc:NodeAssertion ; vc:identifier "carrier-slot:rightObserver" .
 vc:closurePolicy a vc:NodeAssertion ; vc:identifier "carrier-slot:closurePolicy" .
+
+# -----------------------------------------------------------------------------
+# HF-GeometricCurrying carrier slots (added at fire #15)
+# -----------------------------------------------------------------------------
+
+vc:cellKind
+  a rdf:Property ;
+  rdfs:label "cellKind" ;
+  rdfs:comment "An EventCellAssertion's cell-kind anchor (EdgeCell, NodeCell, ...)." ;
+  rdfs:domain vc:EventCellAssertion .
+
+vc:role
+  a rdf:Property ;
+  rdfs:label "role" ;
+  rdfs:comment "A RoleBinding's role-token (source, kind, target, self)." ;
+  rdfs:domain vc:RoleBinding ;
+  rdfs:range xsd:string .
+
+vc:occupant
+  a rdf:Property ;
+  rdfs:label "occupant" ;
+  rdfs:comment "The identity filling a RoleBinding's role." ;
+  rdfs:domain vc:RoleBinding ;
+  rdfs:range vc:NodeAssertion .
+
+vc:roleOfCell
+  a rdf:Property ;
+  rdfs:label "roleOfCell" ;
+  rdfs:comment "Back-pointer from a RoleBinding to its parent EventCellAssertion." ;
+  rdfs:domain vc:RoleBinding ;
+  rdfs:range vc:EventCellAssertion .
+
+vc:closureState
+  a rdf:Property ;
+  rdfs:label "closureState" ;
+  rdfs:comment "Closure state of an EventCellAssertion (open / boundary-closed / closed)." ;
+  rdfs:domain vc:EventCellAssertion ;
+  rdfs:range xsd:string .
+
+# Self-host the new carrier classes + slots as NodeAssertions.
+vc:EventCellAssertion a vc:NodeAssertion ; vc:identifier "carrier-class:EventCellAssertion" .
+vc:RoleBinding        a vc:NodeAssertion ; vc:identifier "carrier-class:RoleBinding" .
+vc:cellKind           a vc:NodeAssertion ; vc:identifier "carrier-slot:cellKind" .
+vc:role               a vc:NodeAssertion ; vc:identifier "carrier-slot:role" .
+vc:occupant           a vc:NodeAssertion ; vc:identifier "carrier-slot:occupant" .
+vc:roleOfCell         a vc:NodeAssertion ; vc:identifier "carrier-slot:roleOfCell" .
+vc:closureState       a vc:NodeAssertion ; vc:identifier "carrier-slot:closureState" .
